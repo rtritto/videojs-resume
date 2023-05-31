@@ -1,5 +1,5 @@
 import videojs from 'video.js';
-import store from 'store';
+
 const Button = videojs.getComponent('Button');
 const Component = videojs.getComponent('Component');
 const ModalDialog = videojs.getComponent('ModalDialog');
@@ -23,10 +23,10 @@ class ResumeButton extends Button {
   }
 
   handleClick() {
-    this.player_.resumeModal.close();
-    this.player_.currentTime(this.resumeFromTime);
-    this.player_.play();
-    this.player_.trigger('resumevideo');
+    this.player.resumeModal.close();
+    this.player.currentTime(this.resumeFromTime);
+    this.player.play();
+    this.player.trigger('resumevideo');
   }
 
   handleKeyPress(event) {
@@ -45,6 +45,10 @@ class ResumeButton extends Button {
 ResumeButton.prototype.controlText_ = 'Resume';
 
 class ResumeCancelButton extends Button {
+  constructor(player, options) {
+    super(player, options);
+    this.player = player;
+  }
 
   buildCSSClass() {
     return 'vjs-no-resume';
@@ -57,8 +61,9 @@ class ResumeCancelButton extends Button {
   }
 
   handleClick() {
-    this.player_.resumeModal.close();
-    store.remove(this.options_.key);
+    this.player.resumeModal.close();
+    this.player.play();
+    this.player.trigger('resumevideo');
   }
 }
 ResumeButton.prototype.controlText_ = 'No Thanks';
@@ -80,9 +85,7 @@ class ModalButtons extends Component {
   createEl() {
     return super.createEl('div', {
       className: 'vjs-resume-modal-buttons',
-      innerHTML: `
-        <p>${this.options_.title}</p>
-      `
+      innerHTML: `<p>${this.options_.title}</p>`
     });
   }
 }
@@ -112,34 +115,23 @@ videojs.registerComponent('ModalButtons', ModalButtons);
 videojs.registerComponent('ResumeModal', ResumeModal);
 
 const Resume = function(options) {
-  let msg;
-
-  if (!store) {
-    return videojs.log('store.js is not available');
-  }
-  if (!store.enabled) {
-    msg = 'Local storage is not supported by your browser.';
-    msg += ' Please disable "Private Mode", or upgrade to a modern browser.';
-    return videojs.log(msg);
-  }
-
-  let videoId = options.uuid;
-  let title = options.title || 'Resume from where you left off?';
-  let resumeButtonText = options.resumeButtonText || 'Resume';
-  let cancelButtonText = options.cancelButtonText || 'No Thanks';
-  let playbackOffset = options.playbackOffset || 0;
-  let key = 'videojs-resume:' + videoId;
+  const videoId = options.uuid;
+  const title = options.title || 'Resume from where you left off?';
+  const resumeButtonText = options.resumeButtonText || 'Resume';
+  const cancelButtonText = options.cancelButtonText || 'No Thanks';
+  const playbackOffset = options.playbackOffset || 0;
+  const key = 'videojs-resume:' + videoId;
 
   this.on('timeupdate', function() {
-    store.set(key, this.currentTime());
+    localStorage.setItem(key, this.currentTime());
   });
 
   this.on('ended', function() {
-    store.remove(key);
+    localStorage.removeItem(key);
   });
 
   this.ready(function() {
-    let resumeFromTime = store.get(key);
+    let resumeFromTime = localStorage.getItem(key);
 
     if (resumeFromTime) {
       if (resumeFromTime >= 5) {
@@ -159,4 +151,4 @@ const Resume = function(options) {
   });
 };
 
-videojs.plugin('Resume', Resume);
+videojs.registerPlugin('Resume', Resume);
