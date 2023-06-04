@@ -99,7 +99,8 @@ videojs.registerComponent('ModalButtons', ModalButtons);
 videojs.registerComponent('ResumeModal', ResumeModal);
 const Resume = function (options) {
   const videoId = options.uuid;
-  const title = options.title || 'Resume from where you left off?';
+  const seconds = Number.parseFloat(localStorage.getItem(key));
+  const title = options.title || `Resume from <b>${seconds}</b>?`;
   const resumeButtonText = options.resumeButtonText || 'Resume';
   const cancelButtonText = options.cancelButtonText || 'No Thanks';
   const playbackOffset = options.playbackOffset || 0;
@@ -111,7 +112,7 @@ const Resume = function (options) {
     localStorage.removeItem(key);
   });
   this.ready(function () {
-    let resumeFromTime = localStorage.getItem(key);
+    let resumeFromTime = seconds;
     if (resumeFromTime) {
       if (resumeFromTime >= 5) {
         resumeFromTime -= playbackOffset;
