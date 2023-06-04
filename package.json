@@ -2,13 +2,13 @@
   "name": "videojs-resume",
   "version": "1.0.0",
   "description": "Resume playback in VideoJS",
-  "type": "module",
-  "main": "dist/videojs-resume.min.js",
+  "main": "dist/videojs-resume.cjs.js",
+  "module": "dist/videojs-resume.es.js",
+  "browser": "dist/videojs-resume.min.js",
   "scripts": {
-    "build": "yarn run sass; yarn run build-dist; yarn run uglify",
-    "sass": "node-sass --output-style compact ./src/videojs-resume.css dist/videojs-resume.min.css",
-    "build-dist": "browserify ./src/videojs-resume.js -p esmify -o dist/videojs-resume.js",
-    "uglify": "uglifyjs dist/videojs-resume.js --compress -o dist/videojs-resume.min.js"
+    "build": "yarn run build:css & yarn run build:js",
+    "build:css": "postcss -o dist/videojs-resume.css --config scripts/postcss.config.mjs src/plugin.css",
+    "build:js": "rollup -c scripts/rollup.config.js"
   },
   "keywords": [
     "videojs",
@@ -18,14 +18,12 @@
   "author": "Shawn Price",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@babel/core": "^7.22.1",
-    "babelify": "^10.0.0",
-    "browserify": "^17.0.0",
-    "browserify-shim": "^3.8.16",
-    "esmify": "^2.1.1",
-    "node-sass": "^9.0.0",
-    "uglify-js": "^3.17.4",
-    "video.js": "^8.3.0"
+    "postcss": "^8.4.24",
+    "postcss-cli": "^10.1.0",
+    "rollup": "^2.79.1",
+    "video.js": "^8.3.0",
+    "videojs-generate-postcss-config": "github:rtritto/videojs-generate-postcss-config#develop",
+    "videojs-generate-rollup-config": "^7.0.1"
   },
   "peerDependencies": {
     "video.js": "^8"
