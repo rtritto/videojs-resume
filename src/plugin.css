@@ -1,4 +1,4 @@
-.vjs-default-skin .vjs-resume-modal .vjs-resume-modal-buttons {
+.video-js .vjs-resume-modal .vjs-resume-modal-buttons {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
@@ -12,11 +12,11 @@
   text-align: center;
 }
 
-.vjs-default-skin .vjs-resume-modal .vjs-resume-modal-buttons p {
+.video-js .vjs-resume-modal .vjs-resume-modal-buttons p {
   margin: 0 0 10px 0;
 }
 
-.vjs-default-skin .vjs-resume-modal .vjs-resume-modal-buttons button {
+.video-js .vjs-resume-modal .vjs-resume-modal-buttons button {
   color: #fff;
   padding: 10px;
   background-color: #42a5f5;
@@ -26,6 +26,6 @@
   cursor: pointer;
 }
 
-.vjs-default-skin .vjs-resume-modal .vjs-resume-modal-buttons button:hover {
+.video-js .vjs-resume-modal .vjs-resume-modal-buttons button:hover {
   background-color: #90caf9;
 }
