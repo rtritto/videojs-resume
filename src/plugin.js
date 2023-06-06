@@ -116,10 +116,6 @@ videojs.registerComponent('ResumeModal', ResumeModal);
 
 const Resume = function(options) {
   const videoId = options.uuid;
-  const title = options.title || 'Resume from where you left off?';
-  const resumeButtonText = options.resumeButtonText || 'Resume';
-  const cancelButtonText = options.cancelButtonText || 'No Thanks';
-  const playbackOffset = options.playbackOffset || 0;
   const key = 'videojs-resume:' + videoId;
 
   this.on('timeupdate', function() {
@@ -131,19 +127,21 @@ const Resume = function(options) {
   });
 
   this.ready(function() {
-    let resumeFromTime = localStorage.getItem(key);
+    const resumeFromTimeRaw = localStorage.getItem(key);
 
-    if (resumeFromTime) {
+    if (resumeFromTimeRaw) {
+      let resumeFromTime = Number.parseFloat(resumeFromTimeRaw);
       if (resumeFromTime >= 5) {
+        const playbackOffset = options.playbackOffset ?? 0;
         resumeFromTime -= playbackOffset;
       }
       if (resumeFromTime <= 0) {
         resumeFromTime = 0;
       }
       this.addChild('ResumeModal', {
-        title,
-        resumeButtonText,
-        cancelButtonText,
+        title: options.title ?? `Resume from <b>${videojs.time.formatTime(resumeFromTime)}</b>?`,
+        resumeButtonText: options.resumeButtonText ?? 'Resume',
+        cancelButtonText: options.cancelButtonText ?? 'No Thanks',
         resumeFromTime,
         key
       });

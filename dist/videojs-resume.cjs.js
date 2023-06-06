@@ -105,10 +105,6 @@ videojs__default["default"].registerComponent('ModalButtons', ModalButtons);
 videojs__default["default"].registerComponent('ResumeModal', ResumeModal);
 const Resume = function (options) {
   const videoId = options.uuid;
-  const title = options.title || 'Resume from where you left off?';
-  const resumeButtonText = options.resumeButtonText || 'Resume';
-  const cancelButtonText = options.cancelButtonText || 'No Thanks';
-  const playbackOffset = options.playbackOffset || 0;
   const key = 'videojs-resume:' + videoId;
   this.on('timeupdate', function () {
     localStorage.setItem(key, this.currentTime());
@@ -117,18 +113,22 @@ const Resume = function (options) {
     localStorage.removeItem(key);
   });
   this.ready(function () {
-    let resumeFromTime = localStorage.getItem(key);
-    if (resumeFromTime) {
+    const resumeFromTimeRaw = localStorage.getItem(key);
+    if (resumeFromTimeRaw) {
+      var _options$title, _options$resumeButton, _options$cancelButton;
+      let resumeFromTime = Number.parseFloat(resumeFromTimeRaw);
       if (resumeFromTime >= 5) {
+        var _options$playbackOffs;
+        const playbackOffset = (_options$playbackOffs = options.playbackOffset) != null ? _options$playbackOffs : 0;
         resumeFromTime -= playbackOffset;
       }
       if (resumeFromTime <= 0) {
         resumeFromTime = 0;
       }
       this.addChild('ResumeModal', {
-        title,
-        resumeButtonText,
-        cancelButtonText,
+        title: (_options$title = options.title) != null ? _options$title : `Resume from <b>${videojs__default["default"].time.formatTime(resumeFromTime)}</b>?`,
+        resumeButtonText: (_options$resumeButton = options.resumeButtonText) != null ? _options$resumeButton : 'Resume',
+        cancelButtonText: (_options$cancelButton = options.cancelButtonText) != null ? _options$cancelButton : 'No Thanks',
         resumeFromTime,
         key
       });
